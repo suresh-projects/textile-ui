@@ -6,7 +6,7 @@ function PlaceOrder() {
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/products")
+    fetch("https://textile-gt9sxn0cm-productmanagement1.vercel.app/api/products")
       .then(res => res.json())
       .then(setProducts);
   }, []);

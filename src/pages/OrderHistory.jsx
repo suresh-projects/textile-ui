@@ -4,7 +4,7 @@ function OrderHistory() {
   const [orders, setOrders] = useState([]);
 
 useEffect(() => {
-  fetch("http://localhost:8081/api/orders")
+  fetch("https://textile-gt9sxn0cm-productmanagement1.vercel.app/api/orders")
     .then(res => res.json())
     .then(data => setOrders(Array.isArray(data) ? data : []))
     .catch(() => setOrders([]));
