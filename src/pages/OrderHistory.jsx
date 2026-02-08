@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function OrderHistory() {
-  const API = process.env.REACT_APP_API_BASE_URL;
+  const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://product-management-bxi8.onrender.com/api";
+
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {

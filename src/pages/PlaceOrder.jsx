@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
 function PlaceOrder() {
-  const API = process.env.REACT_APP_API_BASE_URL;
+  const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://product-management-bxi8.onrender.com/api";
+
 
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState("");
