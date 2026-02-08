@@ -18,9 +18,9 @@ function ProductPage() {
 
   const fetchProducts = () => {
     fetch(`${API}/products`)
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setProducts)
-      .catch(() => setProducts([]));
+      .catch(console.error);
   };
 
   useEffect(() => {
@@ -51,10 +51,18 @@ function ProductPage() {
     });
   };
 
+  const editProduct = (p) => {
+    setEditingId(p.productId);
+    setForm(p);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const deleteProduct = (id) => {
     if (!window.confirm("Delete product?")) return;
-    fetch(`${API}/products/${id}`, { method: "DELETE" })
-      .then(fetchProducts);
+
+    fetch(`${API}/products/${id}`, {
+      method: "DELETE",
+    }).then(fetchProducts);
   };
 
   const resetForm = () => {
@@ -77,7 +85,64 @@ function ProductPage() {
 
   return (
     <div className="container">
-      {/* form + table same as before */}
+      <div className="card">
+        <h3>{editingId ? "Update Product" : "Add Product"}</h3>
+
+        <form onSubmit={handleSubmit} className="form">
+          <input name="productName" placeholder="Product Name" value={form.productName} onChange={handleChange} />
+          <input name="fabricType" placeholder="Fabric Type" value={form.fabricType} onChange={handleChange} />
+          <input name="category" placeholder="Category" value={form.category} onChange={handleChange} />
+          <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} />
+          <input name="stockQuantity" type="number" placeholder="Stock" value={form.stockQuantity} onChange={handleChange} />
+
+          <label>
+            <input type="checkbox" name="available" checked={form.available} onChange={handleChange} />
+            Available
+          </label>
+
+          <button className="btn primary">{editingId ? "Update" : "Add"}</button>
+        </form>
+      </div>
+
+      <input
+        className="search"
+        placeholder="Search products..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Fabric</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {filteredProducts.map((p) => (
+            <tr key={p.productId}>
+              <td>{p.productId}</td>
+              <td>{p.productName}</td>
+              <td>{p.fabricType}</td>
+              <td>{p.category}</td>
+              <td>₹{p.price}</td>
+              <td>{p.stockQuantity}</td>
+              <td>{p.available ? "Yes" : "No"}</td>
+              <td>
+                <button className="btn small" onClick={() => editProduct(p)}>Edit</button>
+                <button className="btn danger small" onClick={() => deleteProduct(p.productId)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
