@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 
 function PlaceOrder() {
+  const API = process.env.REACT_APP_API_BASE_URL;
+
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState("");
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    fetch("https://textile-gt9sxn0cm-productmanagement1.vercel.app/api/products")
-      .then(res => res.json())
-      .then(setProducts);
-  }, []);
+    fetch(`${API}/products`)
+      .then((res) => res.json())
+      .then(setProducts)
+      .catch(() => setProducts([]));
+  }, [API]);
 
   const placeOrder = () => {
     if (!productId) {
@@ -18,27 +21,24 @@ function PlaceOrder() {
     }
 
     const selectedProduct = products.find(
-      p => p.productId === Number(productId)
+      (p) => p.productId === Number(productId)
     );
 
     const totalPrice = selectedProduct.price * qty;
 
-    fetch("http://localhost:8081/api/orders", {
+    fetch(`${API}/orders`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productId: Number(productId),
         quantity: Number(qty),
-        totalPrice: totalPrice
-      })
-    })
-      .then(() => {
-        alert("Order placed successfully");
-        setQty(1);
-        setProductId("");
-      });
+        totalPrice,
+      }),
+    }).then(() => {
+      alert("Order placed successfully");
+      setQty(1);
+      setProductId("");
+    });
   };
 
   return (
@@ -47,7 +47,7 @@ function PlaceOrder() {
 
       <select value={productId} onChange={(e) => setProductId(e.target.value)}>
         <option value="">Select Product</option>
-        {products.map(p => (
+        {products.map((p) => (
           <option key={p.productId} value={p.productId}>
             {p.productName} (₹{p.price})
           </option>
@@ -59,7 +59,6 @@ function PlaceOrder() {
         min="1"
         value={qty}
         onChange={(e) => setQty(e.target.value)}
-        placeholder="Quantity"
       />
 
       <button className="btn primary" onClick={placeOrder}>

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function OrderHistory() {
+  const API = process.env.REACT_APP_API_BASE_URL;
   const [orders, setOrders] = useState([]);
 
-useEffect(() => {
-  fetch("https://textile-gt9sxn0cm-productmanagement1.vercel.app/api/orders")
-    .then(res => res.json())
-    .then(data => setOrders(Array.isArray(data) ? data : []))
-    .catch(() => setOrders([]));
-}, []);
-
+  useEffect(() => {
+    axios
+      .get(`${API}/orders`)
+      .then((res) => setOrders(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setOrders([]));
+  }, [API]);
 
   return (
     <div className="card">
@@ -29,7 +30,7 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(o => (
+            {orders.map((o) => (
               <tr key={o.orderId}>
                 <td>{o.orderId}</td>
                 <td>{o.productId}</td>
